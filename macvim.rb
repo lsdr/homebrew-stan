@@ -63,6 +63,7 @@ class Macvim < Formula
 
     # Create MacVim vimdiff, view, ex equivalents
     executables = %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
+    # Always override system vim, unless explicitly configured not to
     executables += %w[vi vim vimdiff view vimex] unless build.include? "skip-system-override"
     executables.each {|f| ln_s bin+'mvim', bin+f}
   end
