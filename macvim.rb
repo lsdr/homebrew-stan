@@ -1,66 +1,42 @@
+# Forked from original mxcl/homebrew macvim.rb formula
+# https://github.com/mxcl/homebrew/blob/master/Library/Formula/macvim.rb
+#
 require 'formula'
 
-# Reference: https://github.com/b4winckler/macvim/wiki/building
 class Macvim < Formula
   homepage 'http://code.google.com/p/macvim/'
   url 'https://github.com/b4winckler/macvim/archive/snapshot-66.tar.gz'
   version '7.3-66'
   sha1 'd2915438c9405015e5e39099aecbbda20438ce81'
 
-  devel do
-    url 'https://github.com/b4winckler/macvim/archive/snapshot-68.tar.gz'
-    version '7.4a-BETA-68'
-    sha1 'bb764139a3637cd48015207dc91d7470814b37cc'
-  end
-
-  head 'https://github.com/b4winckler/macvim.git', :branch => 'master'
-
-  option "custom-icons", "Try to generate custom document icons"
-  option "override-system-vim", "Override system vim"
+  option "skip-system-override", "Skip system vim override"
 
   depends_on :xcode
-  depends_on 'cscope' => :recommended
-  depends_on 'lua' => :optional
-  depends_on :python => :recommended
-  # Help us! :python3 in MacVim makes the window disappear, so only 2.x bindings!
+  depends_on :python
 
   def install
-    # Set ARCHFLAGS so the Python app (with C extension) that is
-    # used to create the custom icons will not try to compile in
-    # PPC support (which isn't needed in Homebrew-supported systems.)
+    # Upstream settings, not touching those
     arch = MacOS.prefer_64_bit? ? 'x86_64' : 'i386'
     ENV['ARCHFLAGS'] = "-arch #{arch}"
-
-    # If building for 10.7 or up, make sure that CC is set to "clang".
     ENV.clang if MacOS.version >= :lion
 
+    # There is no reason to compile using big/huge features. Multibyte is enabled
+    # as a build option and this formula removes cscope completely.
+    # references:
+    # http://vimdoc.sourceforge.net/htmldoc/various.html#+feature-list
+    # http://www.drchip.org/astronaut/vim/vimfeat.html
     args = %W[
       --with-features=normal
       --with-tlib=ncurses
       --enable-multibyte
       --with-macarchs=#{arch}
       --enable-pythoninterp=dynamic
-      --enable-rubyinterp
+      --enable-rubyinterp=dynamic
+      --with-compiledby=Luiz\ Rocha
     ]
 
-    args << "--with-compiledby=Luiz Rocha"
     args << "--with-macsdk=#{MacOS.version}" unless MacOS::CLT.installed?
-    args << "--enable-cscope" if build.with? "cscope"
 
-    if build.with? "lua"
-      args << "--enable-luainterp"
-      args << "--with-lua-prefix=#{HOMEBREW_PREFIX}"
-    end
-
-    args << "--enable-pythoninterp=yes" if build.with? 'python'
-
-    # MacVim seems to link Python by `-framework Python` (instead of
-    # `python-config --ldflags`) and so we have to pass the -F to point to
-    # where the Python.framework is located, we want it to use!
-    # Also the -L is needed for the correct linking. This is a mess but we have
-    # to wait until MacVim is really able to link against different Python's
-    # on the Mac. Note configure detects brewed python correctly, but that
-    # is ignored.
     # See https://github.com/mxcl/homebrew/issues/17908
     ENV.prepend 'LDFLAGS', "-L#{python2.libdir} -F#{python2.framework}" if python && python.brewed?
 
@@ -75,16 +51,8 @@ class Macvim < Formula
 
     system "./configure", *args
 
-    if build.include? "custom-icons"
-      # Get the custom font used by the icons
-      cd 'src/MacVim/icons' do
-        system "make getenvy"
-      end
-    else
-      # Building custom icons fails for many users, so off by default.
-      inreplace "src/MacVim/icons/Makefile", "$(MAKE) -C makeicns", ""
-      inreplace "src/MacVim/icons/make_icons.py", "dont_create = False", "dont_create = True"
-    end
+    inreplace "src/MacVim/icons/Makefile", "$(MAKE) -C makeicns", ""
+    inreplace "src/MacVim/icons/make_icons.py", "dont_create = False", "dont_create = True"
 
     system "make"
 
@@ -95,7 +63,7 @@ class Macvim < Formula
 
     # Create MacVim vimdiff, view, ex equivalents
     executables = %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
-    executables += %w[vi vim vimdiff view vimex] if build.include? "override-system-vim"
+    executables += %w[vi vim vimdiff view vimex] unless build.include? "skip-system-override"
     executables.each {|f| ln_s bin+'mvim', bin+f}
   end
 
@@ -103,9 +71,7 @@ class Macvim < Formula
     MacVim.app installed to:
       #{prefix}
 
-    To link the application to a normal Mac OS X location:
-        brew linkapps
-    or:
+    To link the application:
         ln -s #{prefix}/MacVim.app /Applications
     EOS
   end

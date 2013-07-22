@@ -11,6 +11,10 @@ You can also install via URL:
 brew install https://raw.github.com/lsdr/homebrew-stan/master/<formula>.rb
 ```
 
+## Other Taps
+
+Check [homebrew/wiki/Interesting-Taps-&-Branches](https://github.com/mxcl/homebrew/wiki/Interesting-Taps-&-Branches) for other useful taps.
+
 ## Stan?
 [Smilin' Stan S. Stanman][stan-bio] is one of the funniest characters of Monkey Island. I used to laugh a lot with his "previously owned" shops and merchandise while playing Monkey Island. This seems like a just homage to Stan's legacy.
 
