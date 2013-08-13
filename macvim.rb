@@ -5,9 +5,9 @@ require 'formula'
 
 class Macvim < Formula
   homepage 'http://code.google.com/p/macvim/'
-  url 'https://github.com/b4winckler/macvim/archive/snapshot-66.tar.gz'
-  version '7.3-66'
-  sha1 'd2915438c9405015e5e39099aecbbda20438ce81'
+  url 'https://github.com/b4winckler/macvim/archive/snapshot-70.tar.gz'
+  version '7.4-70'
+  sha1 '66432ae0fe81b2787b23343b6c99ef81f6b52c3e'
 
   option "skip-system-override", "Skip system vim override"
 
