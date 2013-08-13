@@ -14,6 +14,11 @@ class Macvim < Formula
   depends_on :xcode
   depends_on :python
 
+  def full_name
+    user = %x[dscl . -read /Users/$(id -un) RealName | tail -n1]
+    user.strip
+  end
+
   def install
     # Upstream settings, not touching those
     arch = MacOS.prefer_64_bit? ? 'x86_64' : 'i386'
@@ -32,9 +37,9 @@ class Macvim < Formula
       --with-macarchs=#{arch}
       --enable-pythoninterp=dynamic
       --enable-rubyinterp=dynamic
-      --with-compiledby=Luiz\ Rocha
     ]
 
+    args << "--with-compiledby=#{full_name}"
     args << "--with-macsdk=#{MacOS.version}" unless MacOS::CLT.installed?
 
     # See https://github.com/mxcl/homebrew/issues/17908
