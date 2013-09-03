@@ -2,6 +2,8 @@
 
 List of formulae I either wrote and/or forked (then mangled) for personal use. Feel free to do the same.
 
+I try and avoid conflicts with the base formulae as much as I can. If you feel like contributing, please do the same.
+
 ## How do I install these formulae?
 
 Just `brew tap lsdr/stan` and then `brew install lsdr/stan/<formula>`.
