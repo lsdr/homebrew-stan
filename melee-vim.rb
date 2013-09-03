@@ -3,7 +3,7 @@
 #
 require 'formula'
 
-class Macvim < Formula
+class MeleeVim < Formula
   homepage 'http://code.google.com/p/macvim/'
   url 'https://github.com/b4winckler/macvim/archive/snapshot-70.tar.gz'
   version '7.4-70'
