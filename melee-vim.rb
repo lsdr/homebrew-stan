@@ -21,8 +21,7 @@ class MeleeVim < Formula
 
   def install
     # Upstream settings, not touching those
-    arch = MacOS.prefer_64_bit? ? 'x86_64' : 'i386'
-    ENV['ARCHFLAGS'] = "-arch #{arch}"
+    ENV['ARCHFLAGS'] = "-arch #{MacOS.preferred_arch}"
     ENV.clang if MacOS.version >= :lion
 
     # There is no reason to compile using big/huge features. Multibyte is enabled
@@ -34,7 +33,7 @@ class MeleeVim < Formula
       --with-features=normal
       --with-tlib=ncurses
       --enable-multibyte
-      --with-macarchs=#{arch}
+      --with-macarchs=#{MacOS.preferred_arch}
       --enable-pythoninterp=dynamic
       --enable-rubyinterp=dynamic
     ]
