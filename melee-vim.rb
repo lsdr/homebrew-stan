@@ -21,11 +21,7 @@ class MeleeVim < Formula
 
   # Mavericks Patches, see: https://github.com/lsdr/homebrew-stan/issues/1
   def patches
-    {
-      :p0 => [
-        'https://gist.github.com/lsdr/7364336/raw/24ef27b98e45098502d4600cdf20bf0a488a2366/macvim-maverick.patch'
-      ]
-    }
+    DATA unless build.head?
   end
 
   def install
@@ -90,3 +86,52 @@ class MeleeVim < Formula
     EOS
   end
 end
+
+__END__
+diff --git a/src/auto/configure b/src/auto/configure
+index 4fd7b82..08af7f3 100755
+--- a/src/auto/configure
++++ b/src/auto/configure
+@@ -7206,8 +7208,9 @@ echo "${ECHO_T}$rubyhdrdir" >&6; }
+	  librubyarg="$librubyarg"
+	  RUBY_LIBS="$RUBY_LIBS -L$rubylibdir"
+         elif test -d "/System/Library/Frameworks/Ruby.framework"; then
+-                        RUBY_LIBS="-framework Ruby"
+-                        RUBY_CFLAGS=
++            ruby_fw_ver=`$vi_cv_path_ruby -r rbconfig -e "print $ruby_rbconfig::CONFIG['ruby_version'][0,3]"`
++            RUBY_LIBS="/System/Library/Frameworks/Ruby.framework/Versions/$ruby_fw_ver/Ruby"
++            RUBY_CFLAGS="-I/System/Library/Frameworks/Ruby.framework/Versions/$ruby_fw_ver/Headers -DRUBY_VERSION=$rubyversion"
+             librubyarg=
+	fi
+
+diff --git a/src/if_ruby.c b/src/if_ruby.c
+index 4436e06..44fd5ee 100644
+--- a/src/if_ruby.c
++++ b/src/if_ruby.c
+@@ -96,11 +96,7 @@
+ # define rb_num2int rb_num2int_stub
+ #endif
+
+-#ifdef FEAT_GUI_MACVIM
+-# include <Ruby/ruby.h>
+-#else
+-# include <ruby.h>
+-#endif
++#include <ruby.h>
+ #ifdef RUBY19_OR_LATER
+ # include <ruby/encoding.h>
+ #endif
+diff --git a/src/os_mac.h b/src/os_mac.h
+index 78b79c2..54009ab 100644
+--- a/src/os_mac.h
++++ b/src/os_mac.h
+@@ -16,6 +16,9 @@
+ # define OPAQUE_TOOLBOX_STRUCTS 0
+ #endif
+
++/* Include MAC_OS_X_VERSION_* macros */
++#include <AvailabilityMacros.h>
++
+ /*
+  * Macintosh machine-dependent things.
+  *
