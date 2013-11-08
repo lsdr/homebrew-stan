@@ -23,7 +23,7 @@ class MeleeVim < Formula
   def patches
     {
       :p0 => [
-        'https://gist.github.com/lsdr/7364336/raw/539ee7095eb571edf88e46e12e6512033941327d/macvim-maverick.patch'
+        'https://gist.github.com/lsdr/7364336/raw/24ef27b98e45098502d4600cdf20bf0a488a2366/macvim-maverick.patch'
       ]
     }
   end
