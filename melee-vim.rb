@@ -23,9 +23,7 @@ class MeleeVim < Formula
   def patches
     {
       :p0 => [
-        'https://gist.github.com/lsdr/7364336/raw/d8ed8fd460455b1a4fb1290680bebc102fdb706a/framework-detection.patch',
-        'https://gist.github.com/lsdr/7364336/raw/6d97cea4883bdd9b353c8cd8b1bcff86b6799f98/framework-version-match.patch',
-        'https://gist.github.com/lsdr/7364336/raw/1d5ac8bcc40f75b10020b4dc81577ccfd0bb4b21/missing-macros.patch'
+        'https://gist.github.com/lsdr/7364336/raw/539ee7095eb571edf88e46e12e6512033941327d/macvim-maverick.patch'
       ]
     }
   end
