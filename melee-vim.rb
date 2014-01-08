@@ -1,5 +1,6 @@
 # Forked from original mxcl/homebrew macvim.rb formula
-# https://github.com/mxcl/homebrew/blob/master/Library/Formula/macvim.rb
+# https://github.com/Homebrew/homebrew/blob/master/Library/Formula/macvim.rb
+# reference: https://github.com/b4winckler/macvim/wiki/building
 #
 require 'formula'
 
@@ -9,7 +10,7 @@ class MeleeVim < Formula
   version '7.4-71'
   sha1 '09101e3e29ae517d6846159211ae64e1427b86c0'
 
-  option "skip-system-override", "Skip system vim override"
+  option 'skip-system-override', 'Skip system vim override'
 
   depends_on :xcode
   depends_on :python
@@ -29,8 +30,11 @@ class MeleeVim < Formula
     ENV['ARCHFLAGS'] = "-arch #{MacOS.preferred_arch}"
     ENV.clang if MacOS.version >= :lion
 
-    # There is no reason to compile using big/huge features. Multibyte is enabled
-    # as a build option and this formula removes cscope completely.
+    # MacVim doesn't require any Python, unset PYTHONPATH
+    ENV.delete('PYTHONPATH')
+
+    # There is no reason to compile using big/huge features. Multibyte is
+    # enabled as a build option and this formula removes cscope completely.
     # references:
     # http://vimdoc.sourceforge.net/htmldoc/various.html#+feature-list
     # http://www.drchip.org/astronaut/vim/vimfeat.html
@@ -46,8 +50,11 @@ class MeleeVim < Formula
     args << "--with-compiledby=#{full_name}"
     args << "--with-macsdk=#{MacOS.version}" unless MacOS::CLT.installed?
 
-    # See https://github.com/mxcl/homebrew/issues/17908
-    ENV.prepend 'LDFLAGS', "-L#{python2.libdir} -F#{python2.framework}" if python && python.brewed?
+    # See https://github.com/Homebrew/homebrew/issues/17908
+    if build.with? 'python'
+      py_prefix = Pathname.new `python-config --prefix`.chomp
+      ENV.prepend 'LDFLAGS', "-L#{py_prefix}/lib/python2.7/config -F#{py_prefix.parent.parent}"
+    end
 
     unless MacOS::CLT.installed?
       # On Xcode-only systems:
@@ -58,23 +65,24 @@ class MeleeVim < Formula
       args << "--with-developer-dir=#{MacOS::Xcode.prefix}/Platforms/MacOSX.platform/Developer/"
     end
 
-    system "./configure", *args
+    system './configure', *args
 
-    inreplace "src/MacVim/icons/Makefile", "$(MAKE) -C makeicns", ""
-    inreplace "src/MacVim/icons/make_icons.py", "dont_create = False", "dont_create = True"
+    # No custom icons
+    inreplace 'src/MacVim/icons/Makefile', '$(MAKE) -C makeicns', ''
+    inreplace 'src/MacVim/icons/make_icons.py', 'dont_create = False', 'dont_create = True'
 
-    system "make"
+    system 'make'
 
-    prefix.install "src/MacVim/build/Release/MacVim.app"
-    inreplace "src/MacVim/mvim", /^# VIM_APP_DIR=\/Applications$/,
+    prefix.install 'src/MacVim/build/Release/MacVim.app'
+    inreplace      'src/MacVim/mvim', /^# VIM_APP_DIR=\/Applications$/,
                                  "VIM_APP_DIR=#{prefix}"
-    bin.install "src/MacVim/mvim"
+    bin.install    'src/MacVim/mvim'
 
-    # Create MacVim vimdiff, view, ex equivalents
-    executables = %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
-    # Always override system vim, unless explicitly configured not to
-    executables += %w[vi vim vimdiff view vimex] unless build.include? "skip-system-override"
-    executables.each {|f| ln_s bin+'mvim', bin+f}
+    # Create MacVim vimdiff, view, ex equivalents and override system vim,
+    # unless explicitly configured not to:
+    executables =  %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
+    executables += %w[vi vim vimdiff view vimex] unless build.include? 'skip-system-override'
+    executables.each { |f| ln_s bin+'mvim', bin+f }
   end
 
   def caveats; <<-EOS.undent
