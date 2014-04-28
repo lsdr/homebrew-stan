@@ -45,12 +45,6 @@ class MeleeVim < Formula
     args << "--with-compiledby=#{full_name}"
     args << "--with-macsdk=#{MacOS.version}" unless MacOS::CLT.installed?
 
-    # See https://github.com/Homebrew/homebrew/issues/17908
-    if build.with? 'python'
-      py_prefix = Pathname.new `python-config --prefix`.chomp
-      ENV.prepend 'LDFLAGS', "-L#{py_prefix}/lib/python2.7/config -F#{py_prefix.parent.parent}"
-    end
-
     unless MacOS::CLT.installed?
       # On Xcode-only systems:
       # Macvim cannot deal with "/Applications/Xcode.app/Contents/Developer" as
