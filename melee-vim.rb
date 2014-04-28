@@ -25,7 +25,7 @@ class MeleeVim < Formula
     ENV['ARCHFLAGS'] = "-arch #{MacOS.preferred_arch}"
     ENV.clang if MacOS.version >= :lion
 
-    # MacVim doesn't require any Python, unset PYTHONPATH
+    # MacVim doesn't require any packages, unset PYTHONPATH
     ENV.delete('PYTHONPATH')
 
     # There is no reason to compile using big/huge features. Multibyte is
@@ -77,7 +77,7 @@ class MeleeVim < Formula
     # unless explicitly configured not to:
     executables =  %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
     executables += %w[vi vim vimdiff view vimex] unless build.include? 'skip-system-override'
-    executables.each { |f| ln_s bin+'mvim', bin+f }
+    executables.each { |ex| bin.install_symlink 'mvim' => e }
   end
 
   def caveats; <<-EOS.undent
