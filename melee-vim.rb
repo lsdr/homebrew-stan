@@ -71,7 +71,7 @@ class MeleeVim < Formula
     # unless explicitly configured not to:
     executables =  %w[mvimdiff mview mvimex gvim gvimdiff gview gvimex]
     executables += %w[vi vim vimdiff view vimex] unless build.include? 'skip-system-override'
-    executables.each { |ex| bin.install_symlink 'mvim' => e }
+    executables.each { |ex| bin.install_symlink 'mvim' => ex }
   end
 
   def caveats; <<-EOS.undent
