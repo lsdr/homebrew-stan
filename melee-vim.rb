@@ -12,8 +12,8 @@ class MeleeVim < Formula
 
   option 'skip-system-override', 'Skip system vim override'
 
-  depends_on :xcode
   depends_on :python
+  depends_on :xcode => :build
 
   def full_name
     user = %x[dscl . -read /Users/$(id -un) RealName | tail -n1]
@@ -43,7 +43,6 @@ class MeleeVim < Formula
     ]
 
     args << "--with-compiledby=#{full_name}"
-    args << "--with-macsdk=#{MacOS.version}" unless MacOS::CLT.installed?
 
     unless MacOS::CLT.installed?
       # On Xcode-only systems:
@@ -51,7 +50,8 @@ class MeleeVim < Formula
       # it is returned by `xcode-select -print-path` and already set by
       # Homebrew (in superenv). Instead Macvim needs the deeper dir to directly
       # append "SDKs/...".
-      args << "--with-developer-dir=#{MacOS::Xcode.prefix}/Platforms/MacOSX.platform/Developer/"
+      args << "--with-developer-dir=#{MacOS::Xcode.prefix}/Platforms/MacOSX.platform/Developer"
+      args << "--with-macsdk=#{MacOS.version}"
     end
 
     system './configure', *args
