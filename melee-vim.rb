@@ -63,8 +63,7 @@ class MeleeVim < Formula
     system 'make'
 
     prefix.install 'src/MacVim/build/Release/MacVim.app'
-    inreplace      'src/MacVim/mvim', /^# VIM_APP_DIR=\/Applications$/,
-                                 "VIM_APP_DIR=#{prefix}"
+    inreplace      'src/MacVim/mvim', /^# VIM_APP_DIR=\/Applications$/, "VIM_APP_DIR=#{prefix}"
     bin.install    'src/MacVim/mvim'
 
     # Create MacVim vimdiff, view, ex equivalents and override system vim,
@@ -73,13 +72,5 @@ class MeleeVim < Formula
     executables += %w[vi vim vimdiff view vimex] unless build.include? 'skip-system-override'
     executables.each { |ex| bin.install_symlink 'mvim' => ex }
   end
-
-  def caveats; <<-EOS.undent
-    MacVim.app installed to:
-      #{prefix}
-
-    To link the application:
-        ln -s #{prefix}/MacVim.app /Applications
-    EOS
-  end
 end
+
