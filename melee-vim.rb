@@ -5,10 +5,10 @@
 require 'formula'
 
 class MeleeVim < Formula
-  homepage  'http://code.google.com/p/macvim/'
-  url       'https://github.com/b4winckler/macvim/archive/snapshot-73.tar.gz'
-  version   '7.4-73'
-  sha1      'b87e37fecb305a99bc268becca39f8854e3ff9f0'
+  homepage  'https://github.com/macvim-dev/macvim'
+  url       'https://github.com/macvim-dev/macvim/archive/snapshot-77.tar.gz'
+  version   '7.4-77'
+  sha256    '6b7f4b48ecef4a00dca17efef551884fcea1aa9897005497d31f52da7304bc5f'
 
   option 'skip-system-override', 'Skip system vim override'
 
