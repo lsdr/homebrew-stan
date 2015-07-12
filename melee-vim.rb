@@ -12,8 +12,7 @@ class MeleeVim < Formula
 
   option 'skip-system-override', 'Skip system vim override'
 
-  depends_on :python
-  depends_on :xcode => :build
+  depends_on xcode: :build
 
   def full_name
     user = %x[dscl . -read /Users/$(id -un) RealName | tail -n1]
