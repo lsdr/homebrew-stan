@@ -6,9 +6,9 @@ require 'formula'
 
 class MeleeVim < Formula
   homepage  'https://github.com/macvim-dev/macvim'
-  url       'https://github.com/macvim-dev/macvim/archive/snapshot-77.tar.gz'
-  version   '7.4-77'
-  sha256    '6b7f4b48ecef4a00dca17efef551884fcea1aa9897005497d31f52da7304bc5f'
+  url       'https://github.com/macvim-dev/macvim/archive/snapshot-85.tar.gz'
+  version   '7.4-85'
+  sha256    '774d4d6be7a68ae72a11fe36c401a342e82a051c6c6ec6a4c724d59a4fa0dce2'
 
   option 'skip-system-override', 'Skip system vim override'
 
