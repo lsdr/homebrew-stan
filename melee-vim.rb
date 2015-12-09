@@ -2,8 +2,6 @@
 # https://github.com/Homebrew/homebrew/blob/master/Library/Formula/macvim.rb
 # reference: https://github.com/b4winckler/macvim/wiki/building
 #
-require 'formula'
-
 class MeleeVim < Formula
   homepage  'https://github.com/macvim-dev/macvim'
   url       'https://github.com/macvim-dev/macvim/archive/snapshot-85.tar.gz'
