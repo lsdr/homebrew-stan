@@ -3,10 +3,11 @@
 # reference: https://github.com/b4winckler/macvim/wiki/building
 #
 class MeleeVim < Formula
+  desc      'GUI for vim'
   homepage  'https://github.com/macvim-dev/macvim'
-  url       'https://github.com/macvim-dev/macvim/archive/snapshot-85.tar.gz'
-  version   '7.4-85'
-  sha256    '774d4d6be7a68ae72a11fe36c401a342e82a051c6c6ec6a4c724d59a4fa0dce2'
+  url       'https://github.com/macvim-dev/macvim/archive/snapshot-91.tar.gz'
+  version   '7.4-91'
+  sha256    'ddb550ea1945160b70e1bb8fb1ac0ec8a8c9a959affecb6d6ffd2ded6124cea1'
 
   option 'skip-system-override', 'Skip system vim override'
 
@@ -19,7 +20,6 @@ class MeleeVim < Formula
 
   def install
     # Upstream settings, not touching those
-    ENV['ARCHFLAGS'] = "-arch #{MacOS.preferred_arch}"
     ENV.clang if MacOS.version >= :lion
 
     # MacVim doesn't require any packages, unset PYTHONPATH
@@ -37,6 +37,7 @@ class MeleeVim < Formula
       --with-macarchs=#{MacOS.preferred_arch}
       --enable-pythoninterp=dynamic
       --enable-rubyinterp=dynamic
+      --with-local-dir=#{HOMEBREW_PREFIX}
     ]
 
     args << "--with-compiledby=#{full_name}"
@@ -52,11 +53,6 @@ class MeleeVim < Formula
     end
 
     system './configure', *args
-
-    # No custom icons
-    inreplace 'src/MacVim/icons/Makefile', '$(MAKE) -C makeicns', ''
-    inreplace 'src/MacVim/icons/make_icons.py', 'dont_create = False', 'dont_create = True'
-
     system 'make'
 
     prefix.install 'src/MacVim/build/Release/MacVim.app'
