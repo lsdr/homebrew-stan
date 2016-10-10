@@ -1,15 +1,19 @@
 # Forked from original mxcl/homebrew macvim.rb formula
-# https://github.com/Homebrew/homebrew/blob/master/Library/Formula/macvim.rb
-# reference: https://github.com/b4winckler/macvim/wiki/building
+# references:
+#   https://github.com/Homebrew/homebrew/blob/master/Library/Formula/macvim.rb
+#   https://github.com/macvim-dev/homebrew-macvim/blob/master/macvim.rb
 #
 class MeleeVim < Formula
   desc      "GUI for vim"
   homepage  "http://macvim-dev.github.io/macvim/"
-  url       "https://github.com/macvim-dev/macvim/archive/snapshot-104.tar.gz"
-  version   "7.4-104"
-  sha256    "b58ce2343150b5ef26fc401cc57dac50688429512fa862e90e3c516f26306ff3"
+  url       "https://github.com/macvim-dev/macvim/archive/snapshot-111.tar.gz"
+  version   "8.0-111"
+  sha256    "104f3a30903aa78c350889b1624551fc50caecca34bc5af1d25ca7d00145462c"
 
   option "skip-system-override", "Skip system vim override"
+
+  depends_on :xcode => :build
+  depends_on "lua" => :build
 
   def compiled_by
     user = %x[dscl . -read /Users/$(id -un) RealName | tail -n1]
@@ -17,40 +21,29 @@ class MeleeVim < Formula
   end
 
   def install
-    # Upstream settings, not touching those
-    ENV.clang if MacOS.version >= :lion
+    # set CC to "clang" and unset PYTHONPATH (not required)
+    ENV.clang and ENV.delete("PYTHONPATH")
 
-    # MacVim doesn"t require any packages, unset PYTHONPATH
-    ENV.delete("PYTHONPATH")
-
-    # There is no reason to compile using big/huge features. Multibyte is
-    # enabled as a build option and this formula removes cscope completely.
-    # references:
     # http://vimdoc.sourceforge.net/htmldoc/various.html#+feature-list
     # http://www.drchip.org/astronaut/vim/vimfeat.html
-    args = %W[
+    opts = %W[
       --with-features=normal
       --with-tlib=ncurses
       --enable-multibyte
+      --enable-termtruecolor
       --with-macarchs=#{MacOS.preferred_arch}
+      --with-properly-linked-python2-python3
       --enable-pythoninterp=dynamic
       --enable-rubyinterp=dynamic
+      --enable-luainterp=dynamic
+      --with-lua-prefix=#{HOMEBREW_PREFIX}
       --with-local-dir=#{HOMEBREW_PREFIX}
+      --disable-netbeans
     ]
 
-    args << "--with-compiledby=#{compiled_by}"
+    opts << "--with-compiledby=#{compiled_by}"
 
-    unless MacOS::CLT.installed?
-      # On Xcode-only systems:
-      # Macvim cannot deal with "/Applications/Xcode.app/Contents/Developer" as
-      # it is returned by `xcode-select -print-path` and already set by
-      # Homebrew (in superenv). Instead Macvim needs the deeper dir to directly
-      # append "SDKs/...".
-      args << "--with-developer-dir=#{MacOS::Xcode.prefix}/Platforms/MacOSX.platform/Developer"
-      args << "--with-macsdk=#{MacOS.version}"
-    end
-
-    system "./configure", *args
+    system "./configure", *opts
     system "make"
 
     prefix.install "src/MacVim/build/Release/MacVim.app"
