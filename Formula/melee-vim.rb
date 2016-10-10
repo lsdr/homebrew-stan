@@ -27,11 +27,9 @@ class MeleeVim < Formula
     # http://vimdoc.sourceforge.net/htmldoc/various.html#+feature-list
     # http://www.drchip.org/astronaut/vim/vimfeat.html
     opts = %W[
-      --with-features=normal
+      --with-features=big
       --with-tlib=ncurses
       --enable-multibyte
-      --enable-termtruecolor
-      --enable-signs
       --with-macarchs=#{MacOS.preferred_arch}
       --with-properly-linked-python2-python3
       --enable-pythoninterp=dynamic
