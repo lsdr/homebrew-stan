@@ -31,6 +31,7 @@ class MeleeVim < Formula
       --with-tlib=ncurses
       --enable-multibyte
       --enable-termtruecolor
+      --enable-signs
       --with-macarchs=#{MacOS.preferred_arch}
       --with-properly-linked-python2-python3
       --enable-pythoninterp=dynamic
