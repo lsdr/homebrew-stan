@@ -6,9 +6,9 @@
 class MeleeVim < Formula
   desc      "GUI for vim"
   homepage  "http://macvim-dev.github.io/macvim/"
-  url       "https://github.com/macvim-dev/macvim/archive/snapshot-124.tar.gz"
-  version   "8.0-124"
-  sha256    "589898c797b81050f1a2604eb98e9227eba160e5d96e71ed751b7312a3c833a3"
+  url       "https://github.com/macvim-dev/macvim/archive/snapshot-127.tar.gz"
+  version   "8.0-127"
+  sha256    "51d68454a5b430c2ef679c042be90c11008c1c099f80d4f32258449c0b872eac"
 
   option "skip-system-override", "Skip system vim override"
 
